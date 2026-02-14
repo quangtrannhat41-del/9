@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// Điều chỉnh kích thước canvas khi thay đổi kích thước cửa sổ
+// Cập nhật kích thước canvas khi thay đổi kích thước cửa sổ
 function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -36,7 +36,6 @@ class Firework {
         if (this.y <= this.targetY) {
             this.exploded = true;
             explode(this.x, this.y);
-            reveals.push(new PixelReveal(this.x, this.y));
         }
     }
 
@@ -76,7 +75,7 @@ class Particle {
     }
 
     draw() {
-        ctx.fillStyle = `rgba(255,${Math.random() * 200},0,${this.life / 60})`;
+        ctx.fillStyle = `rgba(255, ${Math.random() * 255}, ${Math.random() * 255}, ${this.life / 60})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
         ctx.fill();
@@ -88,35 +87,26 @@ function explode(x, y) {
     for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle(x, y));
     }
+
+    // Hiển thị ảnh khi pháo hoa nổ
+    reveals.push(new PixelReveal(x, y));
 }
 
-// 🖼️ Hiện ảnh từ tâm (pixel)
+// 🖼️ Hiển thị ảnh sau khi pháo hoa nổ
 class PixelReveal {
     constructor(x, y) {
         this.x = x;
         this.y = y;
         this.scale = 0;
 
-        this.images = [];
-        let loadedImagesCount = 0;
-        const totalImages = 15;
-
-        // Đảm bảo tất cả ảnh được tải trước khi sử dụng
-        for (let i = 1; i <= totalImages; i++) {
+        this.images = []; // Mảng chứa hình ảnh
+        for (let i = 1; i <= 5; i++) { // Giảm số lượng hình ảnh xuống
             let img = new Image();
-            img.src = `images/anh${i}.jpg`; // Đường dẫn đến các hình ảnh
-
-            // Khi ảnh tải xong, tăng bộ đếm
-            img.onload = () => {
-                loadedImagesCount++;
-                if (loadedImagesCount === totalImages) {
-                    // Nếu tất cả ảnh đã được tải xong, tiếp tục
-                    this.img = this.images[Math.floor(Math.random() * this.images.length)];
-                }
-            };
-
-            this.images.push(img); // Thêm ảnh vào mảng
+            img.src = `images/anh${i}.jpg`;  // Đường dẫn đến các hình ảnh
+            this.images.push(img);
         }
+
+        this.img = this.images[Math.floor(Math.random() * this.images.length)]; // Chọn một ảnh ngẫu nhiên
     }
 
     update() {
@@ -124,7 +114,8 @@ class PixelReveal {
     }
 
     draw() {
-        if (!this.img) return; // Nếu ảnh chưa tải xong, không vẽ gì
+        if (!this.img) return; // Nếu ảnh chưa tải xong thì không vẽ
+
         const size = 220 * this.scale;
         const pixel = 8;
 
@@ -164,7 +155,7 @@ function animate() {
     ctx.fillStyle = "rgba(0,0,0,0.25)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Vẽ sao
+    // Vẽ sao nền
     ctx.fillStyle = "#fff";
     stars.forEach(s => {
         ctx.beginPath();
@@ -197,7 +188,7 @@ function animate() {
 }
 animate();
 
-// 🖱️ Click bắn pháo
+// 🖱️ Click để bắn pháo
 window.addEventListener("click", () => {
     const xs = [
         canvas.width * 0.2,
