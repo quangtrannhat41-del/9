@@ -1,9 +1,19 @@
+/* Cấu hình toàn bộ trang */
 html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     height: 100%;
     background: radial-gradient(circle at bottom, #020111, #000);
+}
+
+/* Tiêu đề của trang */
+.new-year-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFD700; /* Màu vàng ánh kim */
+    margin-top: 50px;
 }
 
 /* Canvas full màn hình */
